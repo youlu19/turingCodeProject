@@ -1,0 +1,72 @@
+# 数据存储库
+
+
+
+## CSV 文件存储
+
+csv，全称为 Comma-Separated Values，中文可以叫作逗号分隔值或字符分隔值，其文件以纯文本形式存储表格数据。该文件是一个字符序列，可以由任意数目的记录组成，记录间以某种换行符分隔。每条记录由字段组成，字段间的分隔符是其他字符或字符串，最常见的是逗号或制表符。不过所有记录都有完全相同的字段序列，相当于一个结构化表的纯文本形式。它比 Excel 文件更加简洁，XLS 文本是电子表格，它包含了文本、数值、公式和格式等内容，而 csv 中不包含这些内容，就是特定字符分隔的纯文本，结构简单清晰。所以，有时候用 csv 来保存数据是比较方便的。本节中，我们来讲解 Python 读取和写入 csv 文件的过程。
+
+
+
+### 写入
+
+这里先看一个最简单的例子：
+
+```python
+import csv
+
+with open('data.csv', 'w') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['id', 'name', 'age'])
+    writer.writerow(['10001', 'Mike', 20])
+    writer.writerow(['10002', 'Bob', 22])
+    writer.writerow(['10003', 'Jordan', 21])
+```
+
+首先，打开 data.csv 文件，然后指定打开的模式为 w（即写入），获得文件句柄，随后调用 csv 库的 writer 对象初始化写入对象，传入该句柄，然后调用 writerow 方法传入每行的数据即可完成写入
+
+
+
+### 多行写入
+
+调用 writerows 方法同时写入多行，此时参数就需要为二维列表，例如：
+
+```python
+import csv
+
+with open('data.csv', 'w') as csvfile:   # 如果不想换行的话就在参数里面定义 newline = ''
+    writer = csv.writer(csvfile)
+    writer.writerow(['id', 'name', 'age'])
+    writer.writerows([['10001', 'Mike', 20], ['10002', 'Bob', 22], ['10003', 'Jordan', 21]])
+```
+
+
+
+
+
+### 爬虫案例
+
+```python
+import requests
+import csv
+
+
+res = requests.get('https://careers.tencent.com/tencentcareer/api/post/Query?timestamp=16476055528664&countryId=&cityId=&bgIds=&productId=&categoryId=&parentCategoryId=&keyword=python&pageIndex=2&pageSize=10&language=zh-cn&area=cn')
+# 数据变字典格式
+items = res.json()
+item = items.get('Data')['Posts']  # 列表形式
+data = []
+for i in item:
+    title = i.get('RecruitPostName'),
+    times = i.get('LastUpdateTime'), []
+    data.append([title[0], times[0]])
+
+with open('data2.csv', 'w',encoding='utf-8') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['id', 'name'])
+    writer.writerows(data)
+```
+
+下面就是参考的数据格式
+
+![image-20250429093409107](C:\Users\小竹\AppData\Roaming\Typora\typora-user-images\image-20250429093409107.png)
